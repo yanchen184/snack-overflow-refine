@@ -2,6 +2,8 @@ import { Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerBindings, {
+  CatchAllNavigate,
+  NavigateToResource,
   DocumentTitleHandler,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
@@ -105,32 +107,89 @@ function App() {
                 {/* Protected routes */}
                 <Route
                   element={
-                    <Layout>
-                      <Outlet />
-                    </Layout>
+                    <Outlet />
                   }
                 >
                   {/* Dashboard */}
-                  <Route path="/" element={<Dashboard />} />
+                  <Route
+                    path="/"
+                    element={
+                      <Layout>
+                        <Dashboard />
+                      </Layout>
+                    }
+                  />
 
                   {/* Products */}
                   <Route path="/products">
-                    <Route index element={<ProductList />} />
-                    <Route path="show/:id" element={<ProductShow />} />
-                    <Route path="create" element={<ProductCreate />} />
-                    <Route path="edit/:id" element={<ProductEdit />} />
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <ProductList />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <Layout>
+                          <ProductShow />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <Layout>
+                          <ProductCreate />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <Layout>
+                          <ProductEdit />
+                        </Layout>
+                      }
+                    />
                   </Route>
 
                   {/* Product Classes */}
                   <Route path="/product-classes">
-                    <Route index element={<ProductClassList />} />
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <ProductClassList />
+                        </Layout>
+                      }
+                    />
                   </Route>
 
                   {/* Bookings */}
                   <Route path="/bookings">
-                    <Route index element={<BookingList />} />
-                    <Route path="show/:id" element={<BookingShow />} />
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <BookingList />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <Layout>
+                          <BookingShow />
+                        </Layout>
+                      }
+                    />
                   </Route>
+
+                  {/* Catch-all route for authentication */}
+                  <Route path="*" element={<CatchAllNavigate to="/login" />} />
                 </Route>
               </Routes>
 
