@@ -112,6 +112,7 @@ function App() {
                 <Route
                   path="/"
                   element={
+<<<<<<< HEAD
                     <Layout>
                       <Dashboard />
                     </Layout>
@@ -152,6 +153,91 @@ function App() {
                       </Layout>
                     }
                   />
+=======
+                    <Outlet />
+                  }
+                >
+                  {/* Dashboard */}
+                  <Route
+                    path="/"
+                    element={
+                      <Layout>
+                        <Dashboard />
+                      </Layout>
+                    }
+                  />
+
+                  {/* Products */}
+                  <Route path="/products">
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <ProductList />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <Layout>
+                          <ProductShow />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <Layout>
+                          <ProductCreate />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <Layout>
+                          <ProductEdit />
+                        </Layout>
+                      }
+                    />
+                  </Route>
+
+                  {/* Product Classes */}
+                  <Route path="/product-classes">
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <ProductClassList />
+                        </Layout>
+                      }
+                    />
+                  </Route>
+
+                  {/* Bookings */}
+                  <Route path="/bookings">
+                    <Route
+                      index
+                      element={
+                        <Layout>
+                          <BookingList />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <Layout>
+                          <BookingShow />
+                        </Layout>
+                      }
+                    />
+                  </Route>
+
+                  {/* Catch-all route for authentication */}
+                  <Route path="*" element={<CatchAllNavigate to="/login" />} />
+>>>>>>> 1434ac10bbfe4836180f8678dd421255d48b1b2e
                 </Route>
 
                 {/* Product Classes */}
