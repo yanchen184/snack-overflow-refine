@@ -2,6 +2,8 @@ import { Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerBindings, {
+  CatchAllNavigate,
+  NavigateToResource,
   DocumentTitleHandler,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
@@ -9,11 +11,10 @@ import routerBindings, {
 import { 
   ChakraProvider, 
   extendTheme, 
-  ColorModeScript, 
-  Box 
+  ColorModeScript
 } from "@chakra-ui/react";
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import { dataProvider } from "./dataProvider";
 import { authProvider } from "./authProvider";
 import { Layout } from "./components/layout";
@@ -41,109 +42,164 @@ const theme = extendTheme({
 });
 
 // App version number displayed in header
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.4.0";
 
 function App() {
   // API base URL
   const API_URL = "http://localhost:8080/api";
 
   return (
-    <BrowserRouter>
-      <RefineKbarProvider>
-        <ChakraProvider theme={theme}>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <DevtoolsProvider>
-            <Refine
-              dataProvider={dataProvider(API_URL)}
-              authProvider={authProvider}
-              routerProvider={routerBindings}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                useNewQueryKeys: true,
-                projectId: "7hGBey-enRm2T-CIZlGe",
-              }}
-              resources={[
-                {
-                  name: "dashboard",
-                  list: "/",
+    <ChakraProvider theme={theme}>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <DevtoolsProvider>
+        <RefineKbarProvider>
+          <Refine
+            dataProvider={dataProvider(API_URL)}
+            authProvider={authProvider}
+            routerProvider={routerBindings}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+              projectId: "7hGBey-enRm2T-CIZlGe",
+            }}
+            resources={[
+              {
+                name: "dashboard",
+                list: "/",
+              },
+              {
+                name: "products",
+                list: "/products",
+                show: "/products/show/:id",
+                create: "/products/create",
+                edit: "/products/edit/:id",
+                meta: {
+                  canDelete: true,
                 },
-                {
-                  name: "products",
-                  list: "/products",
-                  show: "/products/show/:id",
-                  create: "/products/create",
-                  edit: "/products/edit/:id",
-                  meta: {
-                    canDelete: true,
-                  },
+              },
+              {
+                name: "product-classes",
+                list: "/product-classes",
+                meta: {
+                  canDelete: true,
                 },
-                {
-                  name: "product-classes",
-                  list: "/product-classes",
-                  meta: {
-                    canDelete: true,
-                  },
+              },
+              {
+                name: "bookings",
+                list: "/bookings",
+                show: "/bookings/show/:id",
+                create: "/bookings/create",
+                edit: "/bookings/edit/:id",
+                meta: {
+                  canDelete: true,
                 },
-                {
-                  name: "bookings",
-                  list: "/bookings",
-                  show: "/bookings/show/:id",
-                  create: "/bookings/create",
-                  edit: "/bookings/edit/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-              ]}
-            >
-              <Routes>
-                {/* Auth routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+              },
+            ]}
+          >
+            <Routes>
+              {/* Auth routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-                {/* Protected routes */}
+              {/* Protected routes */}
+              <Route
+                element={
+                  <Outlet />
+                }
+              >
+                {/* Dashboard */}
                 <Route
+                  path="/"
                   element={
                     <Layout>
-                      <Outlet />
+                      <Dashboard />
                     </Layout>
                   }
-                >
-                  {/* Dashboard */}
-                  <Route path="/" element={<Dashboard />} />
+                />
 
-                  {/* Products */}
-                  <Route path="/products">
-                    <Route index element={<ProductList />} />
-                    <Route path="show/:id" element={<ProductShow />} />
-                    <Route path="create" element={<ProductCreate />} />
-                    <Route path="edit/:id" element={<ProductEdit />} />
-                  </Route>
-
-                  {/* Product Classes */}
-                  <Route path="/product-classes">
-                    <Route index element={<ProductClassList />} />
-                  </Route>
-
-                  {/* Bookings */}
-                  <Route path="/bookings">
-                    <Route index element={<BookingList />} />
-                    <Route path="show/:id" element={<BookingShow />} />
-                  </Route>
+                {/* Products */}
+                <Route path="/products">
+                  <Route
+                    index
+                    element={
+                      <Layout>
+                        <ProductList />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="show/:id"
+                    element={
+                      <Layout>
+                        <ProductShow />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="create"
+                    element={
+                      <Layout>
+                        <ProductCreate />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="edit/:id"
+                    element={
+                      <Layout>
+                        <ProductEdit />
+                      </Layout>
+                    }
+                  />
                 </Route>
-              </Routes>
 
-              {/* Core components */}
-              <RefineKbar />
-              <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
-            </Refine>
-            <DevtoolsPanel />
-          </DevtoolsProvider>
-        </ChakraProvider>
-      </RefineKbarProvider>
-    </BrowserRouter>
+                {/* Product Classes */}
+                <Route path="/product-classes">
+                  <Route
+                    index
+                    element={
+                      <Layout>
+                        <ProductClassList />
+                      </Layout>
+                    }
+                  />
+                </Route>
+
+                {/* Bookings */}
+                <Route path="/bookings">
+                  <Route
+                    index
+                    element={
+                      <Layout>
+                        <BookingList />
+                      </Layout>
+                    }
+                  />
+                  <Route
+                    path="show/:id"
+                    element={
+                      <Layout>
+                        <BookingShow />
+                      </Layout>
+                    }
+                  />
+                </Route>
+
+                {/* Catch-all route for authentication */}
+                <Route path="*" element={<CatchAllNavigate to="/login" />} />
+              </Route>
+            </Routes>
+
+            {/* Core components */}
+            <RefineKbar />
+            <UnsavedChangesNotifier />
+            <DocumentTitleHandler />
+          </Refine>
+          <DevtoolsPanel />
+        </RefineKbarProvider>
+      </DevtoolsProvider>
+    </ChakraProvider>
   );
 }
 

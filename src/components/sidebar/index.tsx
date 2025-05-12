@@ -15,10 +15,9 @@ import {
   FlexProps,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { useNavigate, useLocation } from "react-router-dom";
 import { FiHome, FiShoppingBag, FiUsers, FiCalendar, FiList, FiTag } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { useGetIdentity } from "@refinedev/core";
+import { useGetIdentity, useRouterContext, useRouterType, useLink } from "@refinedev/core";
 import { User } from "../../interfaces";
 
 // Navigation item interface
@@ -46,8 +45,15 @@ const navItems = [
  * Navigation item component
  */
 const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { Link: RefineLink } = useLink();
+  const routerType = useRouterType();
+  const { useLocation } = useRouterContext();
+  
+  // Only get location if we're using React Router
+  const location = routerType === "react-router-v6" 
+    ? useLocation() 
+    : { pathname: "" };
+    
   const isActive = location.pathname === path;
   
   // Color scheme based on active state
@@ -57,37 +63,35 @@ const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
   const inactiveColor = useColorModeValue("gray.600", "gray.200");
 
   return (
-    <Link
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-      onClick={() => navigate(path)}
-    >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        bg={isActive ? activeBg : inactiveBg}
-        color={isActive ? activeColor : inactiveColor}
-        fontWeight={isActive ? "bold" : "normal"}
-        _hover={{
-          bg: activeBg,
-          color: activeColor,
-        }}
-        {...rest}
-      >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    </Link>
+    <Box>
+      <RefineLink to={path}>
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          bg={isActive ? activeBg : inactiveBg}
+          color={isActive ? activeColor : inactiveColor}
+          fontWeight={isActive ? "bold" : "normal"}
+          _hover={{
+            bg: activeBg,
+            color: activeColor,
+          }}
+          {...rest}
+        >
+          {icon && (
+            <Icon
+              mr="4"
+              fontSize="16"
+              as={icon}
+            />
+          )}
+          {children}
+        </Flex>
+      </RefineLink>
+    </Box>
   );
 };
 

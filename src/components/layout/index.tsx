@@ -18,7 +18,6 @@ import {
   SunIcon 
 } from "@chakra-ui/icons";
 import { useLogout, useGetIdentity } from "@refinedev/core";
-import { Outlet } from "react-router-dom";
 import { Header } from "../header";
 import { Sidebar } from "../sidebar";
 
@@ -26,7 +25,7 @@ import { Sidebar } from "../sidebar";
  * Main layout component that wraps all pages
  * Includes header, sidebar and main content area
  */
-export const Layout: React.FC = () => {
+export const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const { data: user } = useGetIdentity();
   const { mutate: logout } = useLogout();
   const { colorMode, toggleColorMode } = useColorMode();
@@ -50,7 +49,7 @@ export const Layout: React.FC = () => {
         
         {/* Page content */}
         <Box p="4">
-          <Outlet />
+          {children}
         </Box>
       </Box>
     </Box>
